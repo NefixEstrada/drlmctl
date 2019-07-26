@@ -16,7 +16,7 @@ func TestGenerateCfg(t *testing.T) {
 
 	tests.GenerateCfg(t)
 
-	exists, err := afero.Exists(fs.FS, "/etc/drlm/core.toml")
+	exists, err := afero.Exists(fs.FS, "/etc/drlm/drlmctl.toml")
 	assert.Nil(err)
 	assert.True(exists)
 

@@ -21,7 +21,7 @@ func TestUserAdd(t *testing.T) {
 		cfg.Config.Core.TLS = false
 
 		theCoreClientMock := &tests.CoreClientMock{}
-		theCoreClientMock.On("UserAdd", metadata.AppendToOutgoingContext(context.Background(), "api", core.API, "tkn", "thisisatoken"), &drlm.UserAddRequest{Usr: "nefix", Pwd: "f0cKt3Rf$"}, []grpc.CallOption(nil)).Return(
+		theCoreClientMock.On("UserAdd", metadata.NewOutgoingContext(context.Background(), metadata.Pairs("api", core.API, "tkn", "thisisatoken")), &drlm.UserAddRequest{Usr: "nefix", Pwd: "f0cKt3Rf$"}, []grpc.CallOption(nil)).Return(
 			&drlm.UserAddResponse{}, nil,
 		)
 		core.Client = theCoreClientMock

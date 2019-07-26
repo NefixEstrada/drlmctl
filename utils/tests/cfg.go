@@ -19,7 +19,7 @@ func GenerateCfg(t *testing.T) {
 
 	err := afero.WriteFile(fs.FS, "/etc/drlm/drlmctl.toml", []byte(fmt.Sprintf(`[core]
 tkn = "thisisatoken"
-tkn_expiration = %s`, time.Now().Format(time.RFC3339Nano))), 0644)
+tkn_expiration = %s`, time.Now().Add(5*time.Minute).Format(time.RFC3339Nano))), 0644)
 	assert.Nil(err)
 
 	cfg.Init("")

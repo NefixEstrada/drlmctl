@@ -19,7 +19,9 @@ func UserLogin(usr, pwd string) (*drlm.UserLoginResponse, error) {
 		Pwd: pwd,
 	}
 
-	rsp, err := Client.UserLogin(context.Background(), req)
+	rsp, err := Client.UserLogin(metadata.NewOutgoingContext(context.Background(), metadata.New(map[string]string{
+		"api": API,
+	})), req)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"api": API,

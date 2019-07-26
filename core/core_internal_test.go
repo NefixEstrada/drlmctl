@@ -52,12 +52,11 @@ func TestReadCert(t *testing.T) {
 	})
 }
 
-func TestPrepareContext(t *testing.T) {
+func TestPrepareCtx(t *testing.T) {
 	assert := assert.New(t)
 
 	t.Run("should prepare the context correctly", func(t *testing.T) {
 		tests.GenerateCfg(t)
-		cfg.Config.Core.TknExpiration = time.Now().Add(5 * time.Minute)
 
 		ctx := prepareCtx()
 
@@ -69,7 +68,7 @@ func TestPrepareContext(t *testing.T) {
 
 	t.Run("should renew the token if it's required", func(t *testing.T) {
 		tests.GenerateCfg(t)
-		cfg.Config.Core.TLS = false
+		cfg.Config.Core.TknExpiration = time.Now()
 
 		newExpiration := time.Now().Add(5 * time.Minute)
 
