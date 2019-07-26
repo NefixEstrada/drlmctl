@@ -25,7 +25,6 @@ func TestUserLogin(t *testing.T) {
 
 	t.Run("should work as expected", func(t *testing.T) {
 		tests.GenerateCfg(t)
-		cfg.Config.Core.TLS = false
 
 		expiration := time.Now().Add(5 * time.Minute).Unix()
 
@@ -48,7 +47,6 @@ func TestUserLogin(t *testing.T) {
 
 	t.Run("should return an error if there's an error logging in", func(t *testing.T) {
 		tests.GenerateCfg(t)
-		cfg.Config.Core.TLS = false
 
 		theCoreClientMock := &tests.CoreClientMock{}
 		theCoreClientMock.On("UserLogin", metadata.NewOutgoingContext(context.Background(), metadata.Pairs("api", core.API)), &drlm.UserLoginRequest{Usr: "nefix", Pwd: "f0cKt3Rf$"}, []grpc.CallOption(nil)).Return(
@@ -67,7 +65,6 @@ func TestUserTokenRenew(t *testing.T) {
 
 	t.Run("should work as expected", func(t *testing.T) {
 		tests.GenerateCfg(t)
-		cfg.Config.Core.TLS = false
 
 		expiration := time.Now().Add(5 * time.Minute).Unix()
 
@@ -90,7 +87,6 @@ func TestUserTokenRenew(t *testing.T) {
 
 	t.Run("should return an error if there's an error renewing the token", func(t *testing.T) {
 		tests.GenerateCfg(t)
-		cfg.Config.Core.TLS = false
 
 		theCoreClientMock := &tests.CoreClientMock{}
 		theCoreClientMock.On("UserTokenRenew", metadata.NewOutgoingContext(context.Background(), metadata.Pairs("api", core.API, "tkn", "thisisatoken")), &drlm.UserTokenRenewRequest{}, []grpc.CallOption(nil)).Return(
@@ -110,7 +106,6 @@ func TestUserTokenRenew(t *testing.T) {
 		assert.Nil(err)
 
 		cfg.Init("")
-		cfg.Config.Core.TLS = false
 
 		theCoreClientMock := &tests.CoreClientMock{}
 		theCoreClientMock.On("UserTokenRenew", metadata.NewOutgoingContext(context.Background(), metadata.Pairs("api", core.API, "tkn", "")), &drlm.UserTokenRenewRequest{}, []grpc.CallOption(nil)).Return(
@@ -129,7 +124,6 @@ func TestUserAdd(t *testing.T) {
 
 	t.Run("should work as expected", func(t *testing.T) {
 		tests.GenerateCfg(t)
-		cfg.Config.Core.TLS = false
 
 		theCoreClientMock := &tests.CoreClientMock{}
 		theCoreClientMock.On("UserAdd", metadata.NewOutgoingContext(context.Background(), metadata.Pairs("api", core.API, "tkn", "thisisatoken")), &drlm.UserAddRequest{Usr: "nefix", Pwd: "f0cKt3Rf$"}, []grpc.CallOption(nil)).Return(
@@ -148,7 +142,6 @@ func TestUserAdd(t *testing.T) {
 
 	t.Run("should return if there's an error adding the user", func(t *testing.T) {
 		tests.GenerateCfg(t)
-		cfg.Config.Core.TLS = false
 
 		theCoreClientMock := &tests.CoreClientMock{}
 		theCoreClientMock.On("UserAdd", metadata.NewOutgoingContext(context.Background(), metadata.Pairs("api", core.API, "tkn", "thisisatoken")), &drlm.UserAddRequest{Usr: "nefix", Pwd: "f0cKt3Rf$"}, []grpc.CallOption(nil)).Return(

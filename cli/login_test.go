@@ -24,7 +24,6 @@ func TestLogin(t *testing.T) {
 
 	t.Run("should work with the username and password passed as parameters", func(t *testing.T) {
 		tests.GenerateCfg(t)
-		cfg.Config.Core.TLS = false
 
 		now := time.Now()
 
@@ -45,7 +44,6 @@ func TestLogin(t *testing.T) {
 
 	t.Run("should exit if there's an error during the authentication", func(t *testing.T) {
 		tests.GenerateCfg(t)
-		cfg.Config.Core.TLS = false
 		cfg.Config.Core.Tkn = ""
 		cfg.Config.Core.TknExpiration = time.Unix(0, 0)
 
