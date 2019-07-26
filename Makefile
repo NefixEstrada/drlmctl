@@ -1,13 +1,13 @@
 export GO111MODULE=on
-BINARY_NAME=drlm-cli
+BINARY_NAME=drlmctl
 
 all: deps build
 install:
-	go install drlm-cli.go
+	go install drlmctl.go
 build:
-	go build drlm-cli.go
+	go build -o $(BINARY_NAME) drlmctl.go
 test:
-	go test -v ./...
+	go test -cover ./...
 clean:
 	go clean
 	rm -f $(BINARY_NAME)
