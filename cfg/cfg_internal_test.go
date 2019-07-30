@@ -36,7 +36,7 @@ func TestSetDefaults(t *testing.T) {
 	})
 }
 
-func TestSave(t *testing.T) {
+func TestSaveTkn(t *testing.T) {
 	assert := assert.New(t)
 
 	t.Run("should save the configuration correctly", func(t *testing.T) {
