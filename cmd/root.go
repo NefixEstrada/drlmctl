@@ -1,67 +1,44 @@
-// Copyright © 2019 Pau Roura <pau@brainupdaters.net>
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Affero General Public License for more details.
-//
-// You should have received a copy of the GNU Affero General Public License
-// along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 package cmd
 
 import (
-	"fmt"
-	"os"
+	"github.com/brainupdaters/drlmctl/cfg"
+	"github.com/brainupdaters/drlmctl/core"
 
-	"github.com/brainupdaters/drlm-cli/lib"
-	"github.com/brainupdaters/drlm-common/logger"
+	"github.com/brainupdaters/drlm-common/pkg/fs"
+	logger "github.com/brainupdaters/drlm-common/pkg/log"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 var cfgFile string
-var verbose bool
+var logVerbose bool
 
-// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "drlm-cli",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
+	Use:   "drlmctl",
+	Short: "TODO",
+	Long:  `TODO`,
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
+// Execute is the main function of the CLI
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatalf("error: %v", err)
 	}
 }
 
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	// Here you will define your flags and configuration settings.
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.drlm-cli.toml)")
-	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
-
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "configuration file to use instead of the default ($HOME/.drlmctl.toml")
+	rootCmd.PersistentFlags().BoolVarP(&logVerbose, "verbose", "v", false, "verbose logging output")
 }
 
-// initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	lib.InitConfig(cfgFile)
-	logger.InitLogger(lib.Config.Logging)
+	fs.Init()
+	cfg.Init(cfgFile)
+	logger.Init(cfg.Config.Log)
+	core.Init()
+	if core.Conn != nil {
+		defer core.Conn.Close()
+	}
 }

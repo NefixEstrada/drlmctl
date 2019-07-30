@@ -1,0 +1,12 @@
+
+[core]
+  cert_path = "/tls/godev/godev.crt"
+  host = "godev"
+  port = 50051
+  tkn = ""
+  tkn_expiration = 1970-01-01T00:00:00Z
+  tls = "true"
+
+[log]
+  file = "./drlmctl.log"
+  level = "trace"
