@@ -1,10 +1,14 @@
 package core
 
 import (
+	"bufio"
 	"context"
 	"crypto/x509"
 	"errors"
 	"fmt"
+	"os"
+	"strings"
+	"syscall"
 	"time"
 
 	"github.com/brainupdaters/drlmctl/cfg"
@@ -13,6 +17,7 @@ import (
 	drlm "github.com/brainupdaters/drlm-common/pkg/proto"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/afero"
+	"golang.org/x/crypto/ssh/terminal"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
@@ -83,8 +88,34 @@ func prepareCtx() context.Context {
 	}
 
 	if cfg.Config.Core.Tkn == "" {
-		// TODO: Change this!! This should be automatic, but it can't call directly to cli.Login because of import cycles
-		log.Fatal("please, login again")
+		r := bufio.NewReader(os.Stdin)
+
+		fmt.Print("Enter username: ")
+
+		var err error
+		usr, err := r.ReadString('\n')
+		if err != nil {
+			log.Fatalf("error logging in: error reading the username: %v", err)
+		}
+		usr = strings.TrimSpace(usr)
+
+		fmt.Print("Enter password: ")
+		bPwd, err := terminal.ReadPassword(int(syscall.Stdin))
+		if err != nil {
+			log.Fatalf("error logging in: error reading the password: %v", err)
+		}
+		pwd := strings.TrimSpace(string(bPwd))
+
+		fmt.Print("\n")
+
+		rsp, err := UserLogin(usr, pwd)
+		if err != nil {
+			os.Exit(1)
+		}
+
+		if err := cfg.SaveTkn(rsp.Tkn, time.Unix(rsp.TknExpiration.Seconds, 0)); err != nil {
+			log.Fatalf("error saving the new token to the configuration: %v", err)
+		}
 	}
 
 	ctx := context.Background()

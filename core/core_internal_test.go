@@ -89,8 +89,4 @@ func TestPrepareCtx(t *testing.T) {
 		})), ctx)
 		assert.Equal("thisisanewtoken", cfg.Config.Core.Tkn)
 	})
-
-	t.Run("should call the Login command if the token renew fails", func(t *testing.T) {
-
-	})
 }
