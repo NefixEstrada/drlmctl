@@ -75,3 +75,22 @@ func UserAdd(usr *models.User) error {
 
 	return nil
 }
+
+// UserDelete removes an user from DRLM Core
+func UserDelete(usr string) error {
+	req := &drlm.UserDeleteRequest{
+		Usr: usr,
+	}
+
+	_, err := Client.UserDelete(prepareCtx(), req)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"api": API,
+			"usr": usr,
+			"err": err,
+		}).Error("error deleting the user from DRLM Core")
+		return fmt.Errorf("error deleting the user from DRLM Core: %v", err)
+	}
+
+	return nil
+}

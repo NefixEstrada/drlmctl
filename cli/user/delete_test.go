@@ -1,0 +1,28 @@
+package user_test
+
+import (
+	"context"
+	"testing"
+
+	"github.com/brainupdaters/drlmctl/cli/user"
+	"github.com/brainupdaters/drlmctl/core"
+	"github.com/brainupdaters/drlmctl/utils/tests"
+
+	drlm "github.com/brainupdaters/drlm-common/pkg/proto"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
+)
+
+func TestDelete(t *testing.T) {
+	t.Run("should work as expected", func(t *testing.T) {
+		tests.GenerateCfg(t)
+
+		theCoreClientMock := &tests.CoreClientMock{}
+		theCoreClientMock.On("UserDelete", metadata.NewOutgoingContext(context.Background(), metadata.Pairs("api", core.API, "tkn", "thisisatoken")), &drlm.UserDeleteRequest{Usr: "nefix"}, []grpc.CallOption(nil)).Return(
+			&drlm.UserDeleteResponse{}, nil,
+		)
+		core.Client = theCoreClientMock
+
+		user.Delete("nefix")
+	})
+}
