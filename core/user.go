@@ -94,3 +94,19 @@ func UserDelete(usr string) error {
 
 	return nil
 }
+
+// UserList lists all the users in DRLM Core
+func UserList() (*drlm.UserListResponse, error) {
+	req := &drlm.UserListRequest{}
+
+	rsp, err := Client.UserList(prepareCtx(), req)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"api": API,
+			"err": err,
+		}).Error("error listing the users from DRLM Core")
+		return &drlm.UserListResponse{}, fmt.Errorf("error listing the users from DRLM Core: %v", err)
+	}
+
+	return rsp, nil
+}
