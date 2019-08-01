@@ -188,3 +188,79 @@ func TestUserDelete(t *testing.T) {
 		assert.EqualError(err, "error deleting the user from DRLM Core: testing error")
 	})
 }
+
+func TestUserList(t *testing.T) {
+	assert := assert.New(t)
+
+	t.Run("should list the users correctly", func(t *testing.T) {
+		tests.GenerateCfg(t)
+
+		now := time.Now()
+
+		theCoreClientMock := &tests.CoreClientMock{}
+		theCoreClientMock.On("UserList", metadata.NewOutgoingContext(context.Background(), metadata.Pairs("api", core.API, "tkn", "thisisatoken")), &drlm.UserListRequest{}, []grpc.CallOption(nil)).Return(
+			&drlm.UserListResponse{
+				Users: []*drlm.UserListResponse_User{
+					&drlm.UserListResponse_User{
+						Usr:       "nefix",
+						AuthType:  drlm.AuthType_LOCAL,
+						CreatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
+						UpdatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
+					},
+					&drlm.UserListResponse_User{
+						Usr:       "admin",
+						AuthType:  drlm.AuthType_LOCAL,
+						CreatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
+						UpdatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
+					},
+					&drlm.UserListResponse_User{
+						Usr:       "notnefix",
+						AuthType:  drlm.AuthType_LOCAL,
+						CreatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
+						UpdatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
+					},
+				},
+			}, nil,
+		)
+		core.Client = theCoreClientMock
+
+		users, err := core.UserList()
+		assert.Nil(err)
+		assert.Equal(&drlm.UserListResponse{
+			Users: []*drlm.UserListResponse_User{
+				&drlm.UserListResponse_User{
+					Usr:       "nefix",
+					AuthType:  drlm.AuthType_LOCAL,
+					CreatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
+					UpdatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
+				},
+				&drlm.UserListResponse_User{
+					Usr:       "admin",
+					AuthType:  drlm.AuthType_LOCAL,
+					CreatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
+					UpdatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
+				},
+				&drlm.UserListResponse_User{
+					Usr:       "notnefix",
+					AuthType:  drlm.AuthType_LOCAL,
+					CreatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
+					UpdatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
+				},
+			},
+		}, users)
+	})
+
+	t.Run("should return an error if there's an error listing the users", func(t *testing.T) {
+		tests.GenerateCfg(t)
+
+		theCoreClientMock := &tests.CoreClientMock{}
+		theCoreClientMock.On("UserList", metadata.NewOutgoingContext(context.Background(), metadata.Pairs("api", core.API, "tkn", "thisisatoken")), &drlm.UserListRequest{}, []grpc.CallOption(nil)).Return(
+			&drlm.UserListResponse{}, errors.New("testing error"),
+		)
+		core.Client = theCoreClientMock
+
+		users, err := core.UserList()
+		assert.EqualError(err, "error listing the users from DRLM Core: testing error")
+		assert.Equal(&drlm.UserListResponse{}, users)
+	})
+}
