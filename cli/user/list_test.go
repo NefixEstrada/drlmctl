@@ -14,10 +14,9 @@ import (
 
 	drlm "github.com/brainupdaters/drlm-common/pkg/proto"
 	"github.com/golang/protobuf/ptypes/timestamp"
+	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestList(t *testing.T) {
