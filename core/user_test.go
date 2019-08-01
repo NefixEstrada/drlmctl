@@ -158,3 +158,33 @@ func TestUserAdd(t *testing.T) {
 		assert.EqualError(err, "error adding the user to DRLM Core: testing error")
 	})
 }
+
+func TestUserDelete(t *testing.T) {
+	assert := assert.New(t)
+
+	t.Run("should delete the user correctly", func(t *testing.T) {
+		tests.GenerateCfg(t)
+
+		theCoreClientMock := &tests.CoreClientMock{}
+		theCoreClientMock.On("UserDelete", metadata.NewOutgoingContext(context.Background(), metadata.Pairs("api", core.API, "tkn", "thisisatoken")), &drlm.UserDeleteRequest{Usr: "nefix"}, []grpc.CallOption(nil)).Return(
+			&drlm.UserDeleteResponse{}, nil,
+		)
+		core.Client = theCoreClientMock
+
+		err := core.UserDelete("nefix")
+		assert.Nil(err)
+	})
+
+	t.Run("should return an error if there's an error deleting the user", func(t *testing.T) {
+		tests.GenerateCfg(t)
+
+		theCoreClientMock := &tests.CoreClientMock{}
+		theCoreClientMock.On("UserDelete", metadata.NewOutgoingContext(context.Background(), metadata.Pairs("api", core.API, "tkn", "thisisatoken")), &drlm.UserDeleteRequest{Usr: "nefix"}, []grpc.CallOption(nil)).Return(
+			&drlm.UserDeleteResponse{}, errors.New("testing error"),
+		)
+		core.Client = theCoreClientMock
+
+		err := core.UserDelete("nefix")
+		assert.EqualError(err, "error deleting the user from DRLM Core: testing error")
+	})
+}
