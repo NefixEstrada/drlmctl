@@ -29,7 +29,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "configuration file to use instead of the default ($HOME/.drlmctl.toml")
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "configuration file to use instead of the default ($HOME/.drlmctl.toml)")
 	rootCmd.PersistentFlags().BoolVarP(&logVerbose, "verbose", "v", false, "verbose logging output")
 }
 
