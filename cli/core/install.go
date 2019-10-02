@@ -11,35 +11,35 @@ import (
 	"github.com/brainupdaters/drlm-common/pkg/os/client"
 	"github.com/brainupdaters/drlm-common/pkg/ssh"
 	"github.com/spf13/afero"
+	log "github.com/sirupsen/logrus"
 )
 
 // Install compiles / downloads the DRLM Core binary, installs it in the DRLM Core server and starts it
 func Install(v string) error {
 	bin, err := software.SoftwareCore.Compile(cfg.Config.Core.OS, cfg.Config.Core.Arch, v)
 	if err != nil {
-		panic(err)
+		log.Fatalf("error installing the DRLM Core binary: %v", err)
 	}
 
 	ctlCli := &client.Local{}
 	ctlOS, err := os.DetectOS(ctlCli)
 	if err != nil {
-		// PANIC
-		panic(err)
+		log.Fatalf("error installing the DRLM Core binary: %v", err)
 	}
 
 	u, err := user.Current()
 	if err != nil {
-		panic(err)
+		log.Fatalf("error installing the DRLM Core binary: %v", err)
 	}
 
 	keysPath, err := ctlOS.CmdSSHGetKeysPath(ctlCli, u.Username)
 	if err != nil {
-		panic(err)
+		log.Fatalf("error installing the DRLM Core binary: %v", err)
 	}
 
 	s, err := ssh.NewSessionWithKey(cfg.Config.Core.Host, cfg.Config.Core.SSHPort, "drlm", keysPath, cfg.Config.Core.SSHKeys)
 	if err != nil {
-		panic(err)
+		log.Fatalf("error installing the DRLM Core binary: %v", err)
 	}
 	defer s.Close()
 
@@ -49,11 +49,11 @@ func Install(v string) error {
 
 	b, err := afero.ReadFile(fs.FS, bin)
 	if err != nil {
-		panic(err)
+		log.Fatalf("error installing the DRLM Core binary: %v", err)
 	}
 
 	if err := cfg.Config.Core.OS.CmdPkgInstallBinary(coreCli, "drlm", "drlm-core", b); err != nil {
-		panic(err)
+		log.Fatalf("error installing the DRLM Core binary: %v", err)
 	}
 
 	return nil

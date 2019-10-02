@@ -11,7 +11,7 @@ var coreAddCmd = &cobra.Command{
 	Short: "Add a new DRLM Core host and copy the SSH keys",
 	Long:  `TODO`,
 	Run: func(cmd *cobra.Command, args []string) {
-		core.Add(hostFlag, portFlag, usrFlag, pwdFlag, isAdminFlag)
+		core.Add(hostFlag, portFlag, usrFlag, pwdFlag)
 	},
 }
 
@@ -28,7 +28,6 @@ func init() {
 	coreAddCmd.Flags().StringVarP(&usrFlag, "user", "u", "", "SSH Username")
 	coreAddCmd.MarkFlagRequired("user")
 	coreAddCmd.Flags().StringVarP(&pwdFlag, "password", "p", "", "SSH Password. If the parameter isn't provided, it's going to be asked through stdin")
-	coreAddCmd.Flags().BoolVarP(&isAdminFlag, "is-admin", "a", false, "Sets if the user is admin (and thus doesn't require to upgrade their privileges to superuser) or if it's not (and thus it does require a privileges upgrade")
 
 	coreCmd.AddCommand(coreAddCmd)
 }
