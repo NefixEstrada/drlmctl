@@ -8,6 +8,7 @@ import (
 
 	"github.com/brainupdaters/drlm-common/pkg/fs"
 	"github.com/brainupdaters/drlm-common/pkg/os"
+	"github.com/brainupdaters/drlm-common/pkg/os/client"
 	"github.com/brainupdaters/drlm-common/pkg/ssh"
 	"github.com/spf13/afero"
 )
@@ -19,7 +20,7 @@ func Install(v string) error {
 		panic(err)
 	}
 
-	ctlCli := &os.ClientLocal{}
+	ctlCli := &client.Local{}
 	ctlOS, err := os.DetectOS(ctlCli)
 	if err != nil {
 		// PANIC
@@ -42,9 +43,8 @@ func Install(v string) error {
 	}
 	defer s.Close()
 
-	coreCli := &os.ClientSSH{
+	coreCli := &client.SSH{
 		Session: s,
-		IsAdmin: false,
 	}
 
 	b, err := afero.ReadFile(fs.FS, bin)

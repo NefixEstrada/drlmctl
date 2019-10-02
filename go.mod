@@ -1,7 +1,7 @@
 module github.com/brainupdaters/drlmctl
 
 require (
-	github.com/brainupdaters/drlm-common v0.0.0-20191001064646-a482459410e1
+	github.com/brainupdaters/drlm-common v0.0.0-20191002072247-5f41c3a84280
 	github.com/go-openapi/strfmt v0.19.2 // indirect
 	github.com/golang/protobuf v1.3.2
 	github.com/google/go-cmp v0.3.1 // indirect
@@ -18,9 +18,9 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.4.0
 	github.com/stretchr/testify v1.4.0
-	golang.org/x/crypto v0.0.0-20190927123631-a832865fa7ad
-	golang.org/x/net v0.0.0-20190930134127-c5a3c61f89f3 // indirect
-	golang.org/x/sys v0.0.0-20190927073244-c990c680b611 // indirect
+	golang.org/x/crypto v0.0.0-20191001170739-f9e2070545dc
+	golang.org/x/net v0.0.0-20191002035440-2ec189313ef0 // indirect
+	golang.org/x/sys v0.0.0-20191002063906-3421d5a6bb1c // indirect
 	google.golang.org/genproto v0.0.0-20190927181202-20e1ac93f88c // indirect
 	google.golang.org/grpc v1.24.0
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect

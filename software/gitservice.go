@@ -41,8 +41,6 @@ func (g *gitHub) GetRelease(user, repo, release string) (string, error) {
 	}
 	req.Path = path.Join(g.Path, "repos", user, repo, "releases", release)
 
-	panic(req.String())
-
 	rsp, err := http.Get(req.String())
 	if err != nil {
 		return "", fmt.Errorf("error getting the release tag: %v", err)

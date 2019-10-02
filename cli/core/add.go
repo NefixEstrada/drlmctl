@@ -8,13 +8,14 @@ import (
 
 	"github.com/brainupdaters/drlm-common/pkg/fs"
 	"github.com/brainupdaters/drlm-common/pkg/os"
+	"github.com/brainupdaters/drlm-common/pkg/os/client"
 	"github.com/brainupdaters/drlm-common/pkg/ssh"
 	"github.com/spf13/afero"
 )
 
 // Add connects to the Core host, creates the drlm user and copies the keys to that user, which has to be admin
 func Add(host string, port int, usr, pwd string, isAdmin bool) {
-	ctlCli := &os.ClientLocal{}
+	ctlCli := &client.Local{}
 	ctlOS, err := os.DetectOS(ctlCli)
 	if err != nil {
 		// PANIC
@@ -36,9 +37,8 @@ func Add(host string, port int, usr, pwd string, isAdmin bool) {
 	}
 	defer s.Close()
 
-	coreCli := &os.ClientSSH{
+	coreCli := &client.SSH{
 		Session: s,
-		IsAdmin: isAdmin,
 	}
 
 	cfg.Config.Core.OS, err = os.DetectOS(coreCli)
