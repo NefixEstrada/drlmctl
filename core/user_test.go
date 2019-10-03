@@ -203,19 +203,19 @@ func TestUserList(t *testing.T) {
 				Users: []*drlm.UserListResponse_User{
 					&drlm.UserListResponse_User{
 						Usr:       "nefix",
-						AuthType:  drlm.AuthType_LOCAL,
+						AuthType:  drlm.AuthType_AUTH_LOCAL,
 						CreatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 						UpdatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 					},
 					&drlm.UserListResponse_User{
 						Usr:       "admin",
-						AuthType:  drlm.AuthType_LOCAL,
+						AuthType:  drlm.AuthType_AUTH_LOCAL,
 						CreatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 						UpdatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 					},
 					&drlm.UserListResponse_User{
 						Usr:       "notnefix",
-						AuthType:  drlm.AuthType_LOCAL,
+						AuthType:  drlm.AuthType_AUTH_LOCAL,
 						CreatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 						UpdatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 					},
@@ -230,19 +230,19 @@ func TestUserList(t *testing.T) {
 			Users: []*drlm.UserListResponse_User{
 				&drlm.UserListResponse_User{
 					Usr:       "nefix",
-					AuthType:  drlm.AuthType_LOCAL,
+					AuthType:  drlm.AuthType_AUTH_LOCAL,
 					CreatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 					UpdatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 				},
 				&drlm.UserListResponse_User{
 					Usr:       "admin",
-					AuthType:  drlm.AuthType_LOCAL,
+					AuthType:  drlm.AuthType_AUTH_LOCAL,
 					CreatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 					UpdatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 				},
 				&drlm.UserListResponse_User{
 					Usr:       "notnefix",
-					AuthType:  drlm.AuthType_LOCAL,
+					AuthType:  drlm.AuthType_AUTH_LOCAL,
 					CreatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 					UpdatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 				},

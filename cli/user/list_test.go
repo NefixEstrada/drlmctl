@@ -33,19 +33,19 @@ func TestList(t *testing.T) {
 				Users: []*drlm.UserListResponse_User{
 					&drlm.UserListResponse_User{
 						Usr:       "nefix",
-						AuthType:  drlm.AuthType_LOCAL,
+						AuthType:  drlm.AuthType_AUTH_LOCAL,
 						CreatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 						UpdatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 					},
 					&drlm.UserListResponse_User{
 						Usr:       "admin",
-						AuthType:  drlm.AuthType_LOCAL,
+						AuthType:  drlm.AuthType_AUTH_LOCAL,
 						CreatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 						UpdatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 					},
 					&drlm.UserListResponse_User{
 						Usr:       "notnefix",
-						AuthType:  drlm.AuthType_LOCAL,
+						AuthType:  drlm.AuthType_AUTH_LOCAL,
 						CreatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 						UpdatedAt: &timestamp.Timestamp{Seconds: now.Unix()},
 					},
@@ -57,13 +57,13 @@ func TestList(t *testing.T) {
 		var b bytes.Buffer
 		user.List(&b)
 
-		assert.Equal(fmt.Sprintf(`┌──────────┬───────────┬─────────────────────┐
-│ USERNAME │ AUTH TYPE │ CREATED AT          │
-├──────────┼───────────┼─────────────────────┤
-│ nefix    │ Local     │ %s │
-│ admin    │ Local     │ %s │
-│ notnefix │ Local     │ %s │
-└──────────┴───────────┴─────────────────────┘
+		assert.Equal(fmt.Sprintf(`┌──────────┬────────────┬─────────────────────┐
+│ USERNAME │ AUTH TYPE  │ CREATED AT          │
+├──────────┼────────────┼─────────────────────┤
+│ nefix    │ Auth_local │ %s │
+│ admin    │ Auth_local │ %s │
+│ notnefix │ Auth_local │ %s │
+└──────────┴────────────┴─────────────────────┘
 `, now.Format("2006/01/02 15:04:05"), now.Format("2006/01/02 15:04:05"), now.Format("2006/01/02 15:04:05")), b.String())
 	})
 
