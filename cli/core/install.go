@@ -10,12 +10,12 @@ import (
 	"github.com/brainupdaters/drlm-common/pkg/os"
 	"github.com/brainupdaters/drlm-common/pkg/os/client"
 	"github.com/brainupdaters/drlm-common/pkg/ssh"
-	"github.com/spf13/afero"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/afero"
 )
 
 // Install compiles / downloads the DRLM Core binary, installs it in the DRLM Core server and starts it
-func Install(v string) error {
+func Install(v string) {
 	bin, err := software.SoftwareCore.Compile(cfg.Config.Core.OS, cfg.Config.Core.Arch, v)
 	if err != nil {
 		log.Fatalf("error installing the DRLM Core binary: %v", err)
@@ -55,6 +55,4 @@ func Install(v string) error {
 	if err := cfg.Config.Core.OS.CmdPkgInstallBinary(coreCli, "drlm", "drlm-core", b); err != nil {
 		log.Fatalf("error installing the DRLM Core binary: %v", err)
 	}
-
-	return nil
 }

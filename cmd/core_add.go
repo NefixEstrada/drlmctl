@@ -11,23 +11,24 @@ var coreAddCmd = &cobra.Command{
 	Short: "Add a new DRLM Core host and copy the SSH keys",
 	Long:  `TODO`,
 	Run: func(cmd *cobra.Command, args []string) {
-		core.Add(hostFlag, portFlag, usrFlag, pwdFlag)
+		// TODO: STDIN
+		core.Add(coreHostFlag, corePortFlag, coreUsrFlag, corePwdFlag)
 	},
 }
 
-var hostFlag string
-var portFlag int
-var usrFlag string
-var pwdFlag string
-var isAdminFlag bool
+var coreHostFlag string
+var corePortFlag int
+var coreUsrFlag string
+var corePwdFlag string
+var coreIsAdminFlag bool
 
 func init() {
-	coreAddCmd.Flags().StringVarP(&hostFlag, "host", "", "", "Hostname / IP of the server where DRLM Core is going to be running")
+	coreAddCmd.Flags().StringVarP(&coreHostFlag, "host", "", "", "Hostname / IP of the server where DRLM Core is going to be running")
 	coreAddCmd.MarkFlagRequired("host")
-	coreAddCmd.Flags().IntVarP(&portFlag, "port", "", 22, "SSH Port of the host")
-	coreAddCmd.Flags().StringVarP(&usrFlag, "user", "u", "", "SSH Username")
+	coreAddCmd.Flags().IntVarP(&corePortFlag, "port", "", 22, "SSH Port of the host")
+	coreAddCmd.Flags().StringVarP(&coreUsrFlag, "user", "u", "", "SSH Username")
 	coreAddCmd.MarkFlagRequired("user")
-	coreAddCmd.Flags().StringVarP(&pwdFlag, "password", "p", "", "SSH Password. If the parameter isn't provided, it's going to be asked through stdin")
+	coreAddCmd.Flags().StringVarP(&corePwdFlag, "password", "p", "", "SSH Password. If the parameter isn't provided, it's going to be asked through stdin")
 
 	coreCmd.AddCommand(coreAddCmd)
 }

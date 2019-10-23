@@ -68,6 +68,12 @@ func (c *CoreClientMock) AgentList(ctx context.Context, req *drlm.AgentListReque
 	return args.Get(0).(*drlm.AgentListResponse), args.Error(1)
 }
 
+// AgentGet mocks the AgentGet  gRPC method
+func (c *CoreClientMock) AgentGet(ctx context.Context, req *drlm.AgentGetRequest, opts ...grpc.CallOption) (*drlm.AgentGetResponse, error) {
+	args := c.Called(ctx, req, opts)
+	return args.Get(0).(*drlm.AgentGetResponse), args.Error(1)
+}
+
 // JobSchedule mocks the JobSchedule  gRPC method
 func (c *CoreClientMock) JobSchedule(ctx context.Context, req *drlm.JobScheduleRequest, opts ...grpc.CallOption) (*drlm.JobScheduleResponse, error) {
 	args := c.Called(ctx, req, opts)

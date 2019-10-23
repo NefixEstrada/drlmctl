@@ -11,14 +11,14 @@ var coreInstallCmd = &cobra.Command{
 	Short: "Compile / Download the DRLM Core binary, install and start it on the server",
 	Long:  `TODO`,
 	Run: func(cmd *cobra.Command, args []string) {
-		core.Install(versionFlag)
+		core.Install(coreVersionFlag)
 	},
 }
 
-var versionFlag string
+var coreVersionFlag string
 
 func init() {
-	coreInstallCmd.Flags().StringVarP(&versionFlag, "version", "", "", "Git tag of the version of DRLM Core")
+	coreInstallCmd.Flags().StringVarP(&coreVersionFlag, "version", "", "", "Git tag of the version of DRLM Core")
 
 	coreCmd.AddCommand(coreInstallCmd)
 }

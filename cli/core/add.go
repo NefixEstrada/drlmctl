@@ -87,4 +87,13 @@ func Add(host string, port int, usr, pwd string) {
 	if err = cfg.Config.Core.OS.CmdUserMakeAdmin(coreCli, "drlm"); err != nil {
 		log.Fatalf("error adding the core server: %v", err)
 	}
+
+	coreKeysPath, err := cfg.Config.Core.OS.CmdSSHGetKeysPath(coreCli, "drlm")
+	if err != nil {
+		log.Fatalf("error getting the DRLM Core SSH keys path: %v", err)
+	}
+
+	if err = cfg.Config.Core.OS.CmdSSHGenerateKeyPair(coreCli, coreKeysPath); err != nil {
+		log.Fatalf("error generating the SSH key pair: %v", err)
+	}
 }
