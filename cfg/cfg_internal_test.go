@@ -58,9 +58,13 @@ func TestSaveTkn(t *testing.T) {
 
 		assert.Equal(fmt.Sprintf(`
 [core]
+  arch = 0
   cert_path = "cert/server.crt"
   host = "localhost"
+  os = 0
   port = 50051
+  ssh_keys = []
+  ssh_port = 0
   tkn = "imaginethisisatoken"
   tkn_expiration = %s
   tls = true
@@ -83,6 +87,6 @@ func TestSaveTkn(t *testing.T) {
 		v.SetFs(fs.FS)
 
 		now := time.Now()
-		assert.EqualError(SaveTkn("imaginethisisatoken", now), "operation not permitted")
+		assert.EqualError(SaveTkn("imaginethisisatoken", now), "error saving the configuration to the configuration file: operation not permitted")
 	})
 }

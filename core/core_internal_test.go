@@ -12,43 +12,51 @@ import (
 
 	"github.com/brainupdaters/drlm-common/pkg/fs"
 	drlm "github.com/brainupdaters/drlm-common/pkg/proto"
-	cmnTests "github.com/brainupdaters/drlm-common/pkg/tests"
+	"github.com/brainupdaters/drlm-common/pkg/test"
 	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
 
-func TestReadCert(t *testing.T) {
-	assert := assert.New(t)
+type TestCoreInternalSuite struct {
+	test.Test
+}
 
-	t.Run("should read the certificate correctly", func(t *testing.T) {
-		tests.GenerateCfg(t)
-		cmnTests.GenerateCert(t, fs.FS, "server", filepath.Dir(cfg.Config.Core.CertPath))
+func TestCoreInternal(t *testing.T) {
+	suite.Run(t, new(TestCoreInternalSuite))
+}
+
+func (s *TestCoreInternalSuite) TestReadCert() {
+
+	s.Run("should read the certificate correctly", func() {
+		s.GenerateCfg(test.CfgPathCtl, func() { cfg.Init("") })
+		s.GenerateCert("server", filepath.Dir(cfg.Config.Core.CertPath))
 
 		cp, err := readCert()
-		assert.Nil(err)
-		assert.NotEqual(&x509.CertPool{}, cp)
+		s.Nil(err)
+		s.NotEqual(&x509.CertPool{}, cp)
 	})
 
-	t.Run("should return an error if there's an error reading the certificate file", func(t *testing.T) {
-		tests.GenerateCfg(t)
+	s.Run("should return an error if there's an error reading the certificate file", func() {
+		s.GenerateCfg(test.CfgPathCtl, func() { cfg.Init("") })
 
 		cp, err := readCert()
-		assert.EqualError(err, "error reading the certificate file: open cert/server.crt: file does not exist")
-		assert.Equal(&x509.CertPool{}, cp)
+		s.EqualError(err, "error reading the certificate file: open cert/server.crt: file does not exist")
+		s.Equal(&x509.CertPool{}, cp)
 	})
 
-	t.Run("should return an error if there's an error parsing the certificate", func(t *testing.T) {
-		tests.GenerateCfg(t)
-		cmnTests.GenerateCert(t, fs.FS, "server", filepath.Dir(cfg.Config.Core.CertPath))
+	s.Run("should return an error if there's an error parsing the certificate", func() {
+		s.GenerateCfg(test.CfgPathCtl, func() { cfg.Init("") })
+		// cmnTests.GenerateCert(t, fs.FS, "server", filepath.Dir(cfg.Config.Core.CertPath))
 
 		afero.WriteFile(fs.FS, cfg.Config.Core.CertPath, []byte("This isn't a cert!"), 0644)
 
 		cp, err := readCert()
-		assert.EqualError(err, "error parsing the certificate: invalid certificate")
-		assert.Equal(&x509.CertPool{}, cp)
+		s.EqualError(err, "error parsing the certificate: invalid certificate")
+		s.Equal(&x509.CertPool{}, cp)
 	})
 }
 
