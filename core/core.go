@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+
 package core
 
 import (
@@ -62,7 +64,7 @@ func Init() {
 	Client = drlm.NewDRLMClient(Conn)
 }
 
-// readCert reads the DRLM Core certificate from the configuration path using a FS sent as parameter
+// readCert reads the DRLM Core certificate from the configuration path
 func readCert() (*x509.CertPool, error) {
 	b, err := afero.ReadFile(fs.FS, cfg.Config.Core.CertPath)
 	if err != nil {
