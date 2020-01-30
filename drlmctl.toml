@@ -1,12 +1,21 @@
 
 [core]
-  cert_path = "/tls/godev/godev.crt"
-  host = "godev"
+  arch = 1
+  cert_path = "/tls/core/core.crt"
+  host = "drlm-testing-drlm-core"
+  os = 1
   port = 50051
-  tkn = ""
-  tkn_expiration = 1970-01-01T00:00:00Z
-  tls = "true"
+  ssh_keys = ["drlm-testing-drlm-core ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDJlo+iNN5BeYV4HvGBuAvp6aC1rVFBtRCBhJKxX0i/snYBh+b7oHy1rxlqog3p/rJ7OFtDq1p++fCELL/AHhbRduM0/XoXMKXrL6kqCf2tIWNaYNKOL71oFTjScd7qKlHo8ToySvKPAGxbSbQatm6N7eUCZqT0eTPDKX45bnGB4X0loi3FTjolBNq85bmKUAYNkYjL6Ktlp3+N7wNQZxEiMi01jKYVf/i1vWn5/7Im3SVILCDjqnJi59NQ+XtVjMk2xh5XynFWsH3L+tyjRF0BHuNGeTzxv1HN9OFpoqDvBPCQdz0imA6mSLFpbb10SvGDF5ZJ8L2hQNUttsH63+5r+2w/pKJwb+Jw12QwQrhcsJI9WGe6mHg7OjPnv7Q9WKgqcXD2wBJzDe7u9p5DoKdxezR9p3Wh7UmkTuJ2QtAq0Z+YKLswlA0Z7mNrInSVBxUBx3xfDrNL1NcLXg65t4OXB20OsfzABJH9TodsRWBV3hGYujPX0amlATqVvD3Ax38=","drlm-testing-drlm-core ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOKDu7qz15XjFRY0hvv2r4dZBAjRKfWsmQ67rveJOJn2gJJkUpZ4K7awETuvmVG5KBtn/jb6u1GcY5OAuakzsXU=","drlm-testing-drlm-core ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPmcSNkkjNl+7fT4IBYMVfkkZrhoDnY0Z8yZR9ifcWKZ"]
+  ssh_port = 22
+  tkn = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJVc3IiOiJhZG1pbiIsIkZpcnN0SXNzdWVkIjoiMjAyMC0wMS0zMFQxMjowNjozMy42MTU3OTMxMjhaIiwiZXhwIjoxNTgwMzg2MjkzfQ.BY4e0vbxcixhQ1fzgnpT-fwNs7__GHHRN6OB51CngrQvdJ7pahynbVc4YTPIyRO9-6K6mUQMR7tO9gLsdOaq8w"
+  tkn_expiration = 2020-01-30T12:11:33Z
+  tls = true
 
 [log]
-  file = "./drlmctl.log"
-  level = "trace"
+  file = "/root/.log/drlm/drlmctl.log"
+  level = "info"
+
+[plugin_repos]
+
+  [plugin_repos.default]
+    url = "https://github.com/nefixestrada/drlm-plugins"

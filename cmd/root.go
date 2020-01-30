@@ -40,7 +40,4 @@ func initConfig() {
 	cfg.Init(cfgFile)
 	logger.Init(cfg.Config.Log)
 	core.Init()
-	if core.Conn != nil {
-		defer core.Conn.Close()
-	}
 }

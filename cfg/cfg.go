@@ -21,8 +21,9 @@ var Config *DRLMCtlConfig
 
 // DRLMCtlConfig is the configuration of the CLI tool of DRLM
 type DRLMCtlConfig struct {
-	Core DRLMCtlCoreConfig `mapstructure:"core"`
-	Log  logger.Config     `mapstructure:"log"`
+	Core        DRLMCtlCoreConfig     `mapstructure:"core"`
+	PluginRepos map[string]PluginRepo `mapstructure:"plugin_repos"`
+	Log         logger.Config         `mapstructure:"log"`
 }
 
 // DRLMCtlCoreConfig is the configuration related with the DRLM Core of the CLI tool of DRLM
@@ -37,6 +38,13 @@ type DRLMCtlCoreConfig struct {
 	CertPath      string    `mapstructure:"cert_path"`
 	Tkn           string    `mapstructure:"tkn"`
 	TknExpiration time.Time `mapstructure:"tkn_expiration"`
+}
+
+// PluginRepo is a DRLM plugin repository
+type PluginRepo struct {
+	URL string `mapstructure:"url"`
+	Usr string `mapstructure:"usr"`
+	Pwd string `mapstructure:"pwd"`
 }
 
 // v is the viper instance for the configuration
@@ -81,6 +89,12 @@ func SetDefaults() {
 		"cert_path":      "cert/server.crt",
 		"tkn":            "",
 		"tkn_expiration": nil,
+	})
+
+	v.SetDefault("plugin_repos", map[string]map[string]interface{}{
+		"default": {
+			"url": "https://github.com/nefixestrada/drlm-plugins",
+		},
 	})
 
 	v.SetDefault("log", map[string]interface{}{
