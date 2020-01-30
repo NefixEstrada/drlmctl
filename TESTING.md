@@ -75,7 +75,7 @@ Machine 4 (OPTIONAL) -> (Linux) [Any Distro] -> DRLM Agent 2
 - Create the DRLM Core configuration (in the DRLM Core server): `/home/drlm/core.toml`:
 
 	```toml
-	[secutity]
+	[security]
 	tokens_secret = "secretsecretsecretsecretsecretsecret"
 
 	[grpc]

@@ -4,11 +4,15 @@ package software
 
 import (
 	"fmt"
+	stdOS "os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
-	stdOS "os"
+	"github.com/brainupdaters/drlmctl/cfg"
+	"github.com/brainupdaters/drlmctl/models"
 
+	"github.com/blang/semver"
 	"github.com/brainupdaters/drlm-common/pkg/fs"
 	"github.com/brainupdaters/drlm-common/pkg/os"
 	"github.com/spf13/afero"
@@ -41,38 +45,137 @@ var (
 	}
 )
 
-// Compile compiles a software piece
-func (s *software) Compile(o os.OS, arch os.Arch, v string) (string, error) {
+/*
+
+ TODO: OS AND ARCH!
+
+*/
+
+// CompilePlugin compiles a plugin
+func CompilePlugin(p *models.Plugin, os os.OS, arch os.Arch, v string) (string, error) {
+	repo, ok := cfg.Config.PluginRepos[p.Repo]
+	if !ok {
+		return "", fmt.Errorf("plugin repository not found")
+	}
+
 	d, err := afero.TempDir(fs.FS, "", "drlmctl-compile-")
 	if err != nil {
 		return "", fmt.Errorf("error creating a temporary directory: %v", err)
 	}
 
 	r, err := git.PlainClone(d, false, &git.CloneOptions{
-		URL:      s.GitService.CloneURL(s.User, s.Repo),
+		URL:      repo.URL,
 		Progress: stdOS.Stdout,
 	})
 	if err != nil {
 		return "", fmt.Errorf("error clonning the repository: %v", err)
 	}
 
-	if v == "" {
-		v, err = s.GitService.GetRelease(s.User, s.Repo, "latest")
-		if err != nil {
-			return "", fmt.Errorf("error getting the latest version: %v", err)
+	if v != "" {
+		if p.Version != v {
+			tags, err := r.Tags()
+			if err != nil {
+				panic(err)
+			}
+
+			var tag *plumbing.Reference
+			if err := tags.ForEach(func(t *plumbing.Reference) error {
+				if strings.HasPrefix(t.Name().Short(), p.Name) {
+					tParts := strings.Split(tag.Name().Short(), "-")
+					if len(tParts) == 2 {
+						ver, err := semver.ParseTolerant(tParts[1])
+						if err != nil {
+							return nil
+						}
+
+						pVer, err := semver.ParseTolerant(p.Version)
+						if err != nil {
+							return fmt.Errorf("invalid plugin version")
+						}
+
+						if ver.Equals(pVer) {
+							tag = t
+						}
+
+						return nil
+					}
+
+					return nil
+				}
+
+				return nil
+			}); err != nil {
+				return "", err
+			}
+
+			if tag != nil {
+				w, err := r.Worktree()
+				if err != nil {
+					return "", fmt.Errorf("error getting the repository worktree: %v", err)
+				}
+
+				if err := w.Checkout(&git.CheckoutOptions{
+					Branch: tag.Name(),
+				}); err != nil {
+					return "", fmt.Errorf("error checking out to the version %s: %v", v, err)
+				}
+			}
 		}
+	} else {
+		head, err := r.Head()
+		if err != nil {
+			return "", fmt.Errorf("error getting the head of the repository: %v", err)
+		}
+
+		p.Version = head.Hash().String()
 	}
 
-	w, err := r.Worktree()
-	if err != nil {
-		return "", fmt.Errorf("error getting the repository worktree: %v", err)
+	if err := stdOS.Chdir(filepath.Join(d, p.Name)); err != nil {
+		return "", fmt.Errorf("error changing the working directory to the repository: %v", err)
 	}
 
-	if err = w.Checkout(&git.CheckoutOptions{
-		Branch: plumbing.NewTagReferenceName(v),
-	}); err != nil {
-		return "", fmt.Errorf("error checking out to the version %s: %v", v, err)
+	cmd := exec.Command("make", "build")
+	if out, err := cmd.CombinedOutput(); err != nil {
+		return "", fmt.Errorf("error compiling the binary: %v: %s", err, out)
 	}
+
+	return filepath.Join(d, p.Name, p.Name), nil
+}
+
+// Compile compiles a software piece
+func (s *software) Compile(o os.OS, arch os.Arch, v string) (string, error) {
+	d := filepath.Join("/src", s.Repo)
+	// d, err := afero.TempDir(fs.FS, "", "drlmctl-compile-")
+	// if err != nil {
+	// 	return "", fmt.Errorf("error creating a temporary directory: %v", err)
+	// }
+	// defer fs.FS.RemoveAll(d)
+
+	// r, err := git.PlainClone(d, false, &git.CloneOptions{
+	// 	URL:      s.GitService.CloneURL(s.User, s.Repo),
+	// 	Progress: stdOS.Stdout,
+	// })
+	// if err != nil {
+	// 	return "", fmt.Errorf("error clonning the repository: %v", err)
+	// }
+
+	// if v == "" {
+	// 	v, err = s.GitService.GetRelease(s.User, s.Repo, "latest")
+	// 	if err != nil {
+	// 		return "", fmt.Errorf("error getting the latest version: %v", err)
+	// 	}
+	// }
+
+	// w, err := r.Worktree()
+	// if err != nil {
+	// 	return "", fmt.Errorf("error getting the repository worktree: %v", err)
+	// }
+
+	// if err = w.Checkout(&git.CheckoutOptions{
+	// 	Branch: plumbing.NewTagReferenceName(v),
+	// }); err != nil {
+	// 	return "", fmt.Errorf("error checking out to the version %s: %v", v, err)
+	// }
 
 	if err := stdOS.Chdir(d); err != nil {
 		return "", fmt.Errorf("error changing the working directory to the repository: %v", err)
