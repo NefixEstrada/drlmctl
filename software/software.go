@@ -13,7 +13,6 @@ import (
 	"github.com/brainupdaters/drlmctl/models"
 
 	"github.com/blang/semver"
-	"github.com/brainupdaters/drlm-common/pkg/fs"
 	"github.com/brainupdaters/drlm-common/pkg/os"
 	"github.com/spf13/afero"
 	"gopkg.in/src-d/go-git.v4"
@@ -52,13 +51,13 @@ var (
 */
 
 // CompilePlugin compiles a plugin
-func CompilePlugin(p *models.Plugin, os os.OS, arch os.Arch, v string) (string, error) {
+func CompilePlugin(fs afero.Fs, p *models.Plugin, os os.OS, arch os.Arch, v string) (string, error) {
 	repo, ok := cfg.Config.PluginRepos[p.Repo]
 	if !ok {
 		return "", fmt.Errorf("plugin repository not found")
 	}
 
-	d, err := afero.TempDir(fs.FS, "", "drlmctl-compile-")
+	d, err := afero.TempDir(fs, "", "drlmctl-compile-")
 	if err != nil {
 		return "", fmt.Errorf("error creating a temporary directory: %v", err)
 	}

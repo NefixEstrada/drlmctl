@@ -9,7 +9,6 @@ import (
 
 	"github.com/brainupdaters/drlmctl/cfg"
 
-	"github.com/brainupdaters/drlm-common/pkg/fs"
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
 )
@@ -17,12 +16,12 @@ import (
 // GenerateCfg creates a configuration file with the default values
 func GenerateCfg(t *testing.T) {
 	assert := assert.New(t)
-	fs.FS = afero.NewMemMapFs()
+	fs := afero.NewMemMapFs()
 
-	err := afero.WriteFile(fs.FS, "/etc/drlm/drlmctl.toml", []byte(fmt.Sprintf(`[core]
+	err := afero.WriteFile(fs, "/etc/drlm/drlmctl.toml", []byte(fmt.Sprintf(`[core]
 tkn = "thisisatoken"
 tkn_expiration = %s`, time.Now().Add(5*time.Minute).Format(time.RFC3339Nano))), 0644)
 	assert.Nil(err)
 
-	cfg.Init("")
+	cfg.Init(fs, "")
 }

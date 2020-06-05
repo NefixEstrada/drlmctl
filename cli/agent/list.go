@@ -16,9 +16,9 @@ func List() {
 	if err == nil {
 		t := table.NewWriter()
 		t.SetOutputMirror(os.Stdout)
-		t.AppendHeader(table.Row{"Host", "Port", "User", "OS", "Arch"})
+		t.AppendHeader(table.Row{"Host", "Version", "SSH Port", "SSH User", "OS", "Arch"})
 		for _, a := range agents {
-			t.AppendRow([]interface{}{a.Host, a.Port, a.Usr, a.OS, a.Arch})
+			t.AppendRow([]interface{}{a.Host, a.Version, a.SSHPort, a.SSHUsr, a.OS, a.Arch})
 		}
 		t.SetStyle(table.StyleLight)
 		t.Render()

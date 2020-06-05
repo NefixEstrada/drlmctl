@@ -8,10 +8,10 @@ import (
 
 	"github.com/brainupdaters/drlmctl/models"
 
-	"github.com/brainupdaters/drlm-common/pkg/fs"
 	"github.com/brainupdaters/drlm-common/pkg/os"
 	drlm "github.com/brainupdaters/drlm-common/pkg/proto"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/afero"
 )
 
 // AgentList returns all the agents in DRLM
@@ -28,11 +28,12 @@ func AgentList() ([]*models.Agent, error) {
 	var agents []*models.Agent
 	for _, a := range rsp.Agents {
 		agents = append(agents, &models.Agent{
-			Host: a.Host,
-			Port: a.Port,
-			Usr:  a.User,
-			OS:   os.OS(a.Os),
-			Arch: os.Arch(a.Arch),
+			Host:    a.Host,
+			SSHPort: a.SshPort,
+			SSHUsr:  a.SshUser,
+			OS:      os.OS(a.Os),
+			Arch:    os.Arch(a.Arch),
+			Version: a.Version,
 		})
 	}
 
@@ -63,22 +64,16 @@ func AgentGet(host string) (*models.Agent, error) {
 }
 
 // AgentAdd adds a new Agent to DRLM Core
-func AgentAdd(a *models.Agent) error {
+func AgentAdd(host string) error {
 	req := &drlm.AgentAddRequest{
-		Host:     a.Host,
-		Port:     a.Port,
-		User:     a.Usr,
-		Password: a.Pwd,
+		Host: host,
 	}
 
 	_, err := Client.AgentAdd(prepareCtx(), req)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"api":  API,
-			"host": a.Host,
-			"port": a.Port,
-			"usr":  a.Usr,
-			"err":  err,
+			"host": host,
 		}).Error("error adding the DRLM Agent")
 		return fmt.Errorf("error adding the DRLM Agent: %v", err)
 	}
@@ -87,8 +82,8 @@ func AgentAdd(a *models.Agent) error {
 }
 
 // AgentInstall installs the Agent binary to the server
-func AgentInstall(host string, binPath string) error {
-	f, err := fs.FS.Open(binPath)
+func AgentInstall(fs afero.Fs, a *models.Agent, binPath string) error {
+	f, err := fs.Open(binPath)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"path": binPath,
@@ -121,8 +116,11 @@ func AgentInstall(host string, binPath string) error {
 		}
 
 		err = stream.Send(&drlm.AgentInstallRequest{
-			Host: host,
-			Bin:  buf[:n],
+			Host:        a.Host,
+			SshPort:     a.SSHPort,
+			SshUser:     a.SSHUsr,
+			SshPassword: a.SSHPwd,
+			Bin:         buf[:n],
 		})
 		if err != nil {
 			log.WithField("err", err).Error("error sending the DRLM Agent binary chunk to the server")

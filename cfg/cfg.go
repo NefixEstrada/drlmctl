@@ -8,11 +8,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/brainupdaters/drlm-common/pkg/fs"
 	logger "github.com/brainupdaters/drlm-common/pkg/log"
 	"github.com/brainupdaters/drlm-common/pkg/os"
 	"github.com/mitchellh/go-homedir"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/afero"
 	"github.com/spf13/viper"
 )
 
@@ -51,9 +51,9 @@ type PluginRepo struct {
 var v *viper.Viper
 
 // Init prepares the configuration and reads it
-func Init(cfgFile string) {
+func Init(fs afero.Fs, cfgFile string) {
 	v = viper.New()
-	v.SetFs(fs.FS)
+	v.SetFs(fs)
 	SetDefaults()
 
 	if cfgFile != "" {
@@ -93,7 +93,7 @@ func SetDefaults() {
 
 	v.SetDefault("plugin_repos", map[string]map[string]interface{}{
 		"default": {
-			"url": "https://github.com/nefixestrada/drlm-plugins",
+			"url": "https://github.com/brainupdaters/drlm-plugins",
 		},
 	})
 

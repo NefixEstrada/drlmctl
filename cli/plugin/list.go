@@ -9,18 +9,19 @@ import (
 	"github.com/brainupdaters/drlmctl/plugin"
 
 	"github.com/jedib0t/go-pretty/table"
+	"github.com/spf13/afero"
 )
 
 // List lists all the plugins available
-func List(repo string) {
+func List(fs afero.Fs, repo string) {
 	var (
 		plugins []*models.Plugin
 		err     error
 	)
 	if repo != "" {
-		plugins, err = plugin.List(repo)
+		plugins, err = plugin.List(fs, repo)
 	} else {
-		plugins, err = plugin.List()
+		plugins, err = plugin.List(fs)
 	}
 
 	if err == nil {

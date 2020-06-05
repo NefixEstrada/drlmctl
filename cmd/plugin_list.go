@@ -13,7 +13,7 @@ var pluginListCmd = &cobra.Command{
 	Short: "List all the available DRLM Plugins",
 	Long:  `TODO`,
 	Run: func(cmd *cobra.Command, args []string) {
-		plugin.List(pluginListRepoFlag)
+		plugin.List(fs, pluginListRepoFlag)
 	},
 }
 

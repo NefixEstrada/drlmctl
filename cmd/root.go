@@ -6,14 +6,17 @@ import (
 	"github.com/brainupdaters/drlmctl/cfg"
 	"github.com/brainupdaters/drlmctl/core"
 
-	"github.com/brainupdaters/drlm-common/pkg/fs"
 	logger "github.com/brainupdaters/drlm-common/pkg/log"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
 
-var cfgFile string
-var logVerbose bool
+var (
+	cfgFile    string
+	logVerbose bool
+	fs         afero.Fs
+)
 
 var rootCmd = &cobra.Command{
 	Use:   "drlmctl",
@@ -36,8 +39,9 @@ func init() {
 }
 
 func initConfig() {
-	fs.Init()
-	cfg.Init(cfgFile)
+	fs = afero.NewOsFs()
+
+	cfg.Init(fs, cfgFile)
 	logger.Init(cfg.Config.Log)
-	core.Init()
+	core.Init(fs)
 }

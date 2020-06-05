@@ -13,7 +13,7 @@ var pluginAddCmd = &cobra.Command{
 	Short: "Add a plugin to a DRLM Agent",
 	Long:  `TODO`,
 	Run: func(cmd *cobra.Command, args []string) {
-		plugin.Add(pluginAddHostFlag, pluginAddPluginFlag, pluginAddVersionFlag)
+		plugin.Add(fs, pluginAddHostFlag, pluginAddPluginFlag, pluginAddVersionFlag)
 	},
 }
 

@@ -7,15 +7,15 @@ import (
 	"io"
 
 	"github.com/brainupdaters/drlmctl/models"
+	"github.com/spf13/afero"
 
-	"github.com/brainupdaters/drlm-common/pkg/fs"
 	drlm "github.com/brainupdaters/drlm-common/pkg/proto"
 	log "github.com/sirupsen/logrus"
 )
 
 // PluginAdd adds a plugin to a DRLM Agent
-func PluginAdd(host string, p *models.Plugin, binPath string) error {
-	f, err := fs.FS.Open(binPath)
+func PluginAdd(fs afero.Fs, host string, p *models.Plugin, binPath string) error {
+	f, err := fs.Open(binPath)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"plugin": p.Name,

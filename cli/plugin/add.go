@@ -9,10 +9,11 @@ import (
 	"github.com/brainupdaters/drlmctl/core"
 	"github.com/brainupdaters/drlmctl/models"
 	"github.com/brainupdaters/drlmctl/software"
+	"github.com/spf13/afero"
 )
 
 // Add adds a plugin to a DRLM Agent
-func Add(host, plugin, v string) {
+func Add(fs afero.Fs, host, plugin, v string) {
 	parts := strings.Split(plugin, "/")
 	if len(parts) < 2 {
 		panic("AAaaaaa")
@@ -29,10 +30,10 @@ func Add(host, plugin, v string) {
 		os.Exit(1)
 	}
 
-	bin, err := software.CompilePlugin(p, a.OS, a.Arch, p.Version)
+	bin, err := software.CompilePlugin(fs, p, a.OS, a.Arch, p.Version)
 	if err != nil {
 		panic(err)
 	}
 
-	core.PluginAdd(host, p, bin)
+	core.PluginAdd(fs, host, p, bin)
 }

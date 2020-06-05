@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/brainupdaters/drlmctl/cfg"
+	"github.com/spf13/afero"
 
 	cmnCore "github.com/brainupdaters/drlm-common/pkg/core"
 	drlm "github.com/brainupdaters/drlm-common/pkg/proto"
@@ -27,8 +28,9 @@ const API string = "v1.0.0"
 var Client drlm.DRLMClient
 
 // Init initializes the DRLM Core client
-func Init() {
+func Init(fs afero.Fs) {
 	Client, _ = cmnCore.NewClient(
+		fs,
 		cfg.Config.Core.TLS,
 		cfg.Config.Core.CertPath,
 		cfg.Config.Core.Host,

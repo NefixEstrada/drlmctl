@@ -14,7 +14,7 @@ var agentAddCmd = &cobra.Command{
 	Long:  `TODO`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO: STDIN
-		agent.Add(agentHostFlag, agentPortFlag, agentUsrFlag, agentPwdFlag)
+		agent.Add(agentHostFlag)
 	},
 }
 
@@ -27,10 +27,6 @@ var agentIsAdminFlag bool
 func init() {
 	agentAddCmd.Flags().StringVarP(&agentHostFlag, "host", "", "", "Hostname / IP of the server where the DRLM Agent is going to be running")
 	agentAddCmd.MarkFlagRequired("host")
-	agentAddCmd.Flags().IntVarP(&agentPortFlag, "port", "", 22, "SSH Port of the host")
-	agentAddCmd.Flags().StringVarP(&agentUsrFlag, "user", "u", "", "SSH Username")
-	agentAddCmd.MarkFlagRequired("user")
-	agentAddCmd.Flags().StringVarP(&agentPwdFlag, "password", "p", "", "SSH Password. If the parameter isn't provided, it's going to be asked through stdin")
 
 	agentCmd.AddCommand(agentAddCmd)
 }

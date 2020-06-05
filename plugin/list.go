@@ -12,7 +12,6 @@ import (
 	"github.com/brainupdaters/drlmctl/models"
 
 	"github.com/blang/semver"
-	"github.com/brainupdaters/drlm-common/pkg/fs"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/afero"
 	"gopkg.in/src-d/go-git.v4"
@@ -23,15 +22,15 @@ import (
 
 // List returns a list with all the available plugins of a repo. If no repos are provided,
 // it will list all the plugins from all the repositories
-func List(repos ...string) ([]*models.Plugin, error) {
-	d, err := afero.TempDir(fs.FS, "", "drlmctl-plugins-list-")
+func List(fs afero.Fs, repos ...string) ([]*models.Plugin, error) {
+	d, err := afero.TempDir(fs, "", "drlmctl-plugins-list-")
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err": err,
 		}).Errorf("error creating a temporary directory")
 		return []*models.Plugin{}, fmt.Errorf("error creating a temporary directory: %v", err)
 	}
-	defer fs.FS.RemoveAll(d)
+	defer fs.RemoveAll(d)
 
 	plugins := []*models.Plugin{}
 	repoFound := false
@@ -59,7 +58,7 @@ func List(repos ...string) ([]*models.Plugin, error) {
 				return []*models.Plugin{}, fmt.Errorf("error clonning the plugin repository %s: %v", n, err)
 			}
 
-			dirs, err := afero.ReadDir(fs.FS, d)
+			dirs, err := afero.ReadDir(fs, d)
 			if err != nil {
 				log.WithFields(log.Fields{
 					"err":  err,
@@ -71,7 +70,7 @@ func List(repos ...string) ([]*models.Plugin, error) {
 			for _, dir := range dirs {
 				if dir.IsDir() && !strings.HasPrefix(dir.Name(), ".") {
 					// Get plugins versions from the plugin.json file
-					ok, err := afero.Exists(fs.FS, filepath.Join(d, dir.Name(), "plugin.json"))
+					ok, err := afero.Exists(fs, filepath.Join(d, dir.Name(), "plugin.json"))
 					if err != nil {
 						log.WithFields(log.Fields{
 							"err":    err,
@@ -85,7 +84,7 @@ func List(repos ...string) ([]*models.Plugin, error) {
 						continue
 					}
 
-					b, err := afero.ReadFile(fs.FS, filepath.Join(d, dir.Name(), "plugin.json"))
+					b, err := afero.ReadFile(fs, filepath.Join(d, dir.Name(), "plugin.json"))
 					if err != nil {
 						log.WithFields(log.Fields{
 							"err":    err,
